@@ -26,43 +26,43 @@ let SHIB_LOGIN = "https://" + window.location.hostname + "/Shibboleth.sso/Login"
 let shib_login_uri = SHIB_LOGIN + '?target=' + TARGET;
 
 function triggerDisco() {
-        // if URL has no return parameter, this page was called without mod_shib
-        // redirecting the browser.
+	// if URL has no return parameter, this page was called without mod_shib
+	// redirecting the browser.
 
 	let parmlist = window.location.search.substring(1);
-  	let parms = parmlist.split('&');
+	let parms = parmlist.split('&');
 	for (i = 0; i < parms.length; i++) {
-        	if (parms[i].startsWith('return')){
+		if (parms[i].startsWith('return')) {
 			return false;
 		}
-        }      
+	}
 	return true;
 }
 
 
 async function startDisco() {
-        // Send Browser to mod_shib to do the redirect
+	// Send Browser to mod_shib to do the redirect
 	try {
 		let r = await fetch(shib_login_uri);
 		let t = r.text();
 		const u = new URL(r.url);
-        	window.location.search=u.search;
+		window.location.search = u.search;
 
 	} catch (error) {
 		console.log(error);
-                throw new Error("Cannot start discovery");
+		throw new Error("Cannot start discovery");
 	}
 
 }
 
 
 function idps_prepare() {
-    if (triggerDisco()){
-       console.log("Forcing mod_shib login");
-       startDisco();
-       return false;
-    }else{
-        console.log("redirected by mod_shib: proceeding");
-        return true;
-   }	
+	if (triggerDisco()) {
+		console.log("Forcing mod_shib login");
+		startDisco();
+		return false;
+	} else {
+		console.log("redirected by mod_shib: proceeding");
+		return true;
+	}
 }
