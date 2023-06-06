@@ -1,0 +1,28 @@
+name: Publish pkg
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Publish
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: build
+        run: tar -czf idps_prepare.tar.gz idps_prepare.js
+
+      - name: hash
+        run: sha256sum idps_prepare.tar.gz > idps_prepare.tar.gz.sha256
+
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            idps_prepare.tar.gz
+            idps_prepare.tar.gz.sha256
